@@ -9,7 +9,9 @@
   "homepage": "/client",
   "dependencies": {
     "autobind-decorator": "2.1.0",
+    "bootstrap": "4.0.0",
     "classnames": "2.2.5",
+    "jquery": "1.9.1",
     "mobx": "3.5.1",
     "mobx-react": "4.4.1",
     "moment": "2.20.1",
@@ -17,6 +19,7 @@
     "react-dom": "16.2.0",
     "react-router-dom": "4.2.2",
     "react-scripts-ts": "2.13.0",
+    "reactstrap": "5.0.0",
     "validator": "9.4.0"
   },
   "scripts": {

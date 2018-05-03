@@ -4,6 +4,7 @@ import NavComponent from "../../common/component/nav-component";
 import TodoItemComponent from "../component/todo-item-component";
 import TodoModel, {ITodoModelProps} from "../model/todo-model";
 import TodoStore from "../store/todo-store";
+import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 
 
 @observer
@@ -29,6 +30,7 @@ export default class TodoContainer extends React.Component<any> {
 				marginTop: "80px",
 				marginRight: "auto",
 				marginLeft: "auto",
+				zIndex: 1040,
 		};
 
 		return (
