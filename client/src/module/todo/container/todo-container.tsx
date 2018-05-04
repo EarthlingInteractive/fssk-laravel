@@ -4,7 +4,6 @@ import NavComponent from "../../common/component/nav-component";
 import TodoItemComponent from "../component/todo-item-component";
 import TodoModel, {ITodoModelProps} from "../model/todo-model";
 import TodoStore from "../store/todo-store";
-import "../../../../node_modules/bootstrap/dist/css/bootstrap.css";
 
 
 @observer
