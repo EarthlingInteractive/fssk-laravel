@@ -32,27 +32,19 @@ export default class TodoItemComponent extends React.Component<ITodoItemComponen
 	}
 
 	public render() {
-		const isNew = this.state.title ? false : true;
 		const todoitem = this.renderTodoItem();
 		return (
 			<li className="list-group-item list-group-flush">
 				<div className="form-check">
-					<label className="form-check-label">
 					<input
 						className="form-check-input"
 						type="checkbox"
+						id={this.props.todo.id}
 						checked={!!this.props.todo.completed}
 						onChange={this.toggleCompleted}
 					/>
-				</label>
+					{todoitem}
 				</div>
-				{todoitem}
-				{!isNew && <button
-					className="btn btn-link btn-sm"
-					onClick={this.deleteTodo}
-				>Delete
-				</button>
-				}
 			</li>
 		);
 	}
@@ -76,7 +68,7 @@ export default class TodoItemComponent extends React.Component<ITodoItemComponen
 				>Save
 				</button>
 				<button
-					className="btn btn-outline-light btn-sm"
+					className="btn btn-outline-secondary btn-sm"
 					onClick={this.cancelUpdateTodo}
 				>Cancel
 				</button>
@@ -85,8 +77,15 @@ export default class TodoItemComponent extends React.Component<ITodoItemComponen
 		} else {
 			return (
 				<div className="form-inline">
-				{this.state.title} (updated {this.props.todo.timeSinceUpdated()})
-				<button className="btn btn-outline-primary btn-sm" onClick={this.enableEditing}>Update</button>
+					<label className="form-check-label"  htmlFor={this.props.todo.id}>
+						{!this.state.editable && <span>{this.state.title} (updated {this.props.todo.timeSinceUpdated()})</span>}
+					</label>
+					<button className="btn btn-outline-primary btn-sm" onClick={this.enableEditing}>Update</button>
+					<button
+						className="btn btn-link btn-sm"
+						onClick={this.deleteTodo}
+					>Delete
+					</button>
 				</div>
 			);
 
