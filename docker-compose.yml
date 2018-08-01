@@ -1,11 +1,11 @@
 version: '2'
 services:
-  server:
+  fssk-laravel-server:
     build:
       context: ./
       dockerfile: deploy/server.docker
-    hostname: 'server'
-    container_name: 'server'
+    hostname: 'fssk-laravel-server'
+    container_name: 'fssk-laravel-server'
     entrypoint: /server-entrypoint.sh
     env_file: ./server/.env
     command: 'apache2-foreground'
@@ -16,18 +16,18 @@ services:
       - './deploy/server-entrypoint.sh:/server-entrypoint.sh'
       - './deploy/php.ini:/usr/local/etc/php/php.ini'
     depends_on:
-      - db
+      - fssk-laravel-db
     working_dir: '/var/www'
     links:
-      - 'db:db'
+      - 'fssk-laravel-db:db'
     networks:
       - app
-  client:
+  fssk-laravel-client:
     build:
       context: ./
       dockerfile: deploy/client.docker
-    hostname: 'client'
-    container_name: 'client'
+    hostname: 'fssk-laravel-client'
+    container_name: 'fssk-laravel-client'
     env_file: ./client/.env
     command: 'npm start'
     ports:
@@ -37,7 +37,7 @@ services:
     working_dir: '/opt/src'
     networks:
       - app
-  db:
+  fssk-laravel-db:
     environment:
       - POSTGRES_USER=root
       - POSTGRES_DATABASE=test
@@ -45,7 +45,7 @@ services:
       - POSTGRES_HOST=localhost
       - POSTGRES_PORT=5432
     image: 'postgres:9.6'
-    container_name: 'db'
+    container_name: 'fssk-laravel-db'
     ports:
       - '5432:5432'
     volumes:
@@ -58,5 +58,5 @@ networks:
     driver: bridge
 
 volumes:
-  db-data:
-  server-data:
+  fssk-laravel-db-data:
+  fssk-laravel-server-data:

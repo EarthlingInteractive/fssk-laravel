@@ -22,9 +22,10 @@ and starts server at `http://localhost:4000`. Server calls are proxied, so `http
 To init the database:
 
 ```shell
-docker exec -it server php server/artisan migrate --seed
+docker exec -it fssk-laravel-server php server/artisan migrate --seed
 ```
 
+Log in to the todo app with `test@earthlinginteractive.com`, password `test`.
 
 ## Developing
 
@@ -58,11 +59,11 @@ See Getting Started section for steps.
 Once spun up, you can shell into the client or server instances like:
 
 ```shell
-docker exec -it client bash
+docker exec -it fssk-laravel-client bash
 ```
 
 ```shell
-docker exec -it server bash
+docker exec -it fssk-laravel-server bash
 ```
 
 ### Building
@@ -86,13 +87,13 @@ Will build the client code, spin up the server in a docker instance with `http:/
 Next, you should generate a new application key for the production environment:
 
 ```shell
-docker exec -it server php server/artisan key:generate
+docker exec -it fssk-laravel-server php server/artisan key:generate
 ```
 
 And run the database migrations:
 
 ```shell
-docker exec -it server php server/artisan migrate
+docker exec -it fssk-laravel-server php server/artisan migrate
 ```
 
 To eek out best performance, should also run `php server/artisan config:cache` and `php server/artisan route:cache`, and make sure `APP_DEBUG` is false.
@@ -120,7 +121,7 @@ cd server && ./vendor/bin/phpunit
 Laravel has a CLI tool called [Artisan](https://laravel.com/docs/5.5/artisan). To use it:
 
 ```shell
-docker exec -it server php server/artisan YOUR_COMMAND
+docker exec -it fssk-laravel-server php server/artisan YOUR_COMMAND
 ```
 
 Do `list` to see available commands.
@@ -199,3 +200,22 @@ $this->call(TodosTableSeeder::class);
 ## Licensing
 
 [MIT License](LICENSE.md)
+
+---
+
+## Tips and Tricks
+
+### Windows Line Endings
+
+Make sure git globally has line endings set to LF.  This needs to be set ***before*** cloning the project.
+
+- For windows: `git config --global core.autocrlf false`
+- For linux/mac: `git config --global core.autocrlf input`
+
+If you forget to do this in windows, you make get errors starting docker like `file not found`. 
+Update the line endings of any files that are crlf to lf and try again.
+
+### Windows Watching
+
+In order for file changes to be picked up by the watchers in client side code, be sure to set `CHOKIDAR_USEPOLLING=true`
+in the `.env` file. 

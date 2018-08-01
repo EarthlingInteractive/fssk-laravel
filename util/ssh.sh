@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 echo "Starting Server Bash";
-docker exec -it server bash
+docker exec -it fssk-laravel-server bash
