@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-docker exec -it server php server/artisan migrate --seed
+docker exec -it fssk-laravel-server php server/artisan migrate --seed

@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-docker exec -it client npm test
+docker exec -it fssk-laravel-client npm test
