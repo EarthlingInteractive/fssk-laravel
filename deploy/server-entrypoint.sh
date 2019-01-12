@@ -9,4 +9,7 @@ chown -R www-data.www-data /var/www && chmod 775 /var/www;
 echo "Create symlink for production builds";
 ln -s /var/www/client/build /var/www/server/public/client
 
+echo "Run migrations";
+php server/artisan migrate --force
+
 exec "$@"
