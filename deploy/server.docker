@@ -4,8 +4,12 @@ LABEL maintainer="kunze@earthlinginteractive.com"
 
 COPY ./deploy/php.ini /usr/local/etc/php/
 
-RUN apt-get update && apt-get install -y wget git zip postgresql postgresql-contrib libmcrypt-dev libpq-dev && a2enmod rewrite \
-    && docker-php-ext-install -j$(nproc) mcrypt pdo pdo_pgsql
+RUN apt-get update \
+    && mkdir -p /usr/share/man/man1 \
+    && mkdir -p /usr/share/man/man7 \
+    && apt-get install -y wget git zip postgresql postgresql-contrib libpq-dev && a2enmod rewrite
+
+RUN docker-php-ext-install -j$(nproc) pdo pdo_pgsql
 
 COPY ./deploy/vhost /etc/apache2/sites-enabled/000-default.conf
 COPY ./deploy/server-entrypoint.sh /server-entrypoint.sh
