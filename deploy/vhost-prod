@@ -1,0 +1,45 @@
+<VirtualHost *:80>
+    DocumentRoot /var/www/server/public/client
+
+    ErrorLog  /dev/stdout
+    CustomLog /dev/stdout combined
+    LogLevel rewrite:trace3
+
+    <Directory /var/www/server/public/client>
+        allow from all
+        AllowOverride All
+        Require all granted
+        Options -MultiViews
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_URI} !^/api
+        RewriteRule ^ index.html [QSA,L]
+    </Directory>
+
+    Alias /api /var/www/server/public
+
+    <Directory /var/www/server/public>
+        Options FollowSymLinks
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+        Require all granted
+
+        RewriteEngine On
+        RewriteBase /api/
+
+        # Handle Authorization Header
+        RewriteCond %{HTTP:Authorization} .
+        RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+        # Redirect Trailing Slashes If Not A Folder...
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteCond %{REQUEST_URI} (.+)/$
+        RewriteRule ^ %1 [L,R=301]
+
+        # Handle Front Controller...
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^ index.php [L]
+    </Directory>
+</VirtualHost>

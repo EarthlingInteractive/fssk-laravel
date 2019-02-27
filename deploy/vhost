@@ -1,4 +1,5 @@
-<VirtualHost *:80>
+Listen 4000 
+<VirtualHost *:80 *:4000>
     DocumentRoot /var/www/server/public
 
     ErrorLog  /dev/stdout
