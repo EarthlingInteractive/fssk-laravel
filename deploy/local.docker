@@ -7,7 +7,7 @@ COPY ./deploy/php.ini /usr/local/etc/php/
 RUN apt-get update \
     && mkdir -p /usr/share/man/man1 \
     && mkdir -p /usr/share/man/man7 \
-    && apt-get install -y wget git zip postgresql postgresql-contrib libpq-dev && a2enmod rewrite proxy
+    && apt-get install -y wget git zip postgresql postgresql-contrib libpq-dev && a2enmod rewrite
 
 RUN docker-php-ext-install -j$(nproc) pdo pdo_pgsql
 
