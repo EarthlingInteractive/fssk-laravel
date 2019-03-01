@@ -3,7 +3,8 @@
 FROM node:10-alpine as client-builder
 
 ## Install build toolchain, install node deps and compile native add-ons
-RUN apk add --no-cache --virtual .gyp python make g++
+RUN apk add --no-cache --virtual .gyp python make g++ \
+    && apk add jq
 
 RUN mkdir -p /opt/src
 
@@ -12,13 +13,12 @@ COPY ./client .
 
 ENV CHOKIDAR_USEPOLLING true
 
-RUN npm install
-
-RUN npm run build
+# Change the client repp's package.json to make it's homepage directory "/client"
+RUN cat package.json | jq '.homepage="/client"' > package.json.tmp && mv package.json.tmp package.json
 
 RUN rm -rf /opt/src/node_modules
-ENV NODE_ENV production
-RUN npm install
+
+RUN npm run build
 
 ##################################################
 # Stage 2: Build Server
@@ -37,7 +37,7 @@ RUN docker-php-ext-install -j$(nproc) pdo pdo_pgsql
 
 RUN mkdir -p /var/www/util
 
-COPY ./deploy/vhost-prod /etc/apache2/sites-enabled/000-default.conf
+COPY ./deploy/vhost /etc/apache2/sites-enabled/000-default.conf
 COPY ./deploy/server-entrypoint.sh /var/www/util/server-entrypoint.sh
 RUN chmod 755 /var/www/util/server-entrypoint.sh
 
@@ -47,12 +47,12 @@ RUN wget -q 'https://getcomposer.org/installer' -O - | php; \
     mv composer.phar /usr/local/bin/composer;
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
-ENV NODE_ENV production
 
 COPY ./util/wait-for-it.sh /var/www/util/
 RUN chmod 755 /var/www/util/wait-for-it.sh
 
+CMD ["apache2-foreground"]
+
 ##################################################
 # Stage 3: Transfer client to a place we can serve from
-
-COPY --from=client-builder /opt/src/build /var/www/server/public/client
+COPY --from=client-builder /opt/src/build /var/www/client/build

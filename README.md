@@ -82,7 +82,7 @@ Update your `.env` files to indicate a production build, like `NODE_ENV=producti
 docker-compose -f docker-compose-prod.yml up
 ```
 
-Will build the client code, spin up the server in a docker instance with `http://localhost:4000/` pointing to the client's index.html and built js/css.
+Will build the client code, spin up the server in a docker instance with `http://localhost/` pointing to the client's index.html and built js/css.
 
 Next, you should generate a new application key for the production environment:
 
