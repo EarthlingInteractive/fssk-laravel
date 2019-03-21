@@ -76,27 +76,61 @@ cd client/ && npm run build
 
 ### Deploying / Publishing
 
-Update your `.env` files to indicate a production build, like `NODE_ENV=production` and `APP_ENV=production`. 
+The production Dockerfile lives at `deploy/prod.docker` and contains all the instructions required to build a
+docker image that will run the application.
 
-```shell
-docker-compose -f docker-compose-prod.yml up
+There is a GitLab CI file at the project root that contains instructions for deploying via GitLab to Rancher-based environments.
+Out of the box, three environments are supported: `test`, `stage`, and `master` (aka production).  Each environment should have a
+corresponding branch of the same name in git.  Changes flow from:
+```
+[feature branch] --> test --> stage --> master
 ```
 
-Will build the client code, spin up the server in a docker instance with `http://localhost/` pointing to the client's index.html and built js/css.
+To deploy code to an environment:
 
-Next, you should generate a new application key for the production environment:
+1. Make sure that you have access to the gitlab remote by registering your public SSH key with your gitlab account
+1. Make sure that the gitlab remote has been added to your repo:
+   ```bash
+   git add remote deploy <your_gitlab_project_url>
+   ```
+1. Check out the branch for the environment you want to deploy:
+   ```bash
+   git checkout master
+   ```
+1. Push that branch to the GitLab remote:
+   ```bash
+   git push deploy
+   ```
+1. Check GitLab for the status of the deployment pipeline jobs.
+
+When setting up the GitLab project, make sure to set all of the variables used in the `.gitlab-ci.yml` file in the Environment Variables section of the CI/CD Settings.
+The $RANCHER_SERVICE_* environment variables should match the name of the service in Rancher.
+
+
+To eek out best performance, should also run `php server/artisan config:cache` and `php server/artisan route:cache`, and make sure `APP_DEBUG` is false and `NODE_ENV=production` and `APP_ENV=production`.
+
+
+#### Example Deployment
+There is an example version of the fssk-laravel project itself running at https://fssk-laravel.ei-app.com
+The rancher URL is https://rancher.earthlinginteractive.com/env/1a5/apps/stacks/1st7/services/1s553/containers?tags=ei-app&which=all and
+the associated GitLab project is https://git.ei-platform.com/EarthlingInteractive/StarterKits/fssk-laravel
+Since this starter kit doesn't use the `test` and `stage` environments, only the `master` branch of this repository is configured to deploy on rancher.
+
+#### Testing Production Builds Locally
+
+To test a production build locally, run:
 
 ```shell
-docker exec -it fssk-laravel-server php server/artisan key:generate
+docker-compose -f docker-compose-prod.yml up -d
 ```
 
-And run the database migrations:
+This command will build the client & server code and spin up the server in a docker instance with http://localhost:4000/ pointing to client's index.html.
+The static client-side files are being served using php.  This configuration is intended to be deployed on a rancher-based
+environment.
 
-```shell
-docker exec -it fssk-laravel-server php server/artisan migrate
-```
+**Note:** When switching back and forth between the local dev and prod builds, if you see docker errors complaining about the network not being found,
+try running the `docker-compose down` command before switching.
 
-To eek out best performance, should also run `php server/artisan config:cache` and `php server/artisan route:cache`, and make sure `APP_DEBUG` is false.
 
 ## Configuration
 
