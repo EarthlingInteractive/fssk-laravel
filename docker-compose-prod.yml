@@ -1,35 +1,22 @@
-version: '2'
+version: '3'
 services:
   fssk-laravel-server:
     build:
       context: ./
-      dockerfile: deploy/server.docker
-    hostname: 'fssk-laravel-server'
+      dockerfile: deploy/prod.docker
+    hostname: 'fssk-server'
     container_name: 'fssk-laravel-server'
-    entrypoint: /server-entrypoint.sh
     env_file: ./server/.env
-    command: 'apache2-foreground'
+    command: ['./util/wait-for-it.sh', './util/server-entrypoint.sh', 'apache2-foreground']
+    environment:
+      - 'NODE_ENV=production'
     ports:
-      - '4000:80'
+      - '80:80'
     depends_on:
-      - db
-      - client
+      - fssk-laravel-db
     working_dir: '/var/www'
     links:
       - 'fssk-laravel-db:db'
-    networks:
-      - app
-  fssk-laravel-client:
-    build:
-      context: ./
-      dockerfile: deploy/client.docker
-    hostname: 'fssk-laravel-client'
-    container_name: 'fssk-laravel-client'
-    env_file: ./client/.env
-    command: 'npm run build'
-    volumes:
-      - './client:/opt/src'
-    working_dir: '/opt/src'
     networks:
       - app
   fssk-laravel-db:
@@ -44,7 +31,8 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - './server/database/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh'
+      - 'fssk-laravel-db-data:/var/lib/postgresql/data'
+      - './server/database/scripts:/docker-entrypoint-initdb.d'
     networks:
       - app
 
