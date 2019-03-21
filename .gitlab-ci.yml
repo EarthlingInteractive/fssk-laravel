@@ -26,6 +26,6 @@ upgrade-master:
   stage: deploy
   image: cdrx/rancher-gitlab-deploy
   script:
-  - upgrade --rancher-url $RANCHER_URL_DEV --rancher-key $RANCHER_KEY_DEV --rancher-secret $RANCHER_SECRET_DEV --stack $RANCHER_STACK_DEV --service $RANCHER_SERVICE_STAGE --environment $RANCHER_ENV_DEV --new-image $IMAGE --wait-for-upgrade-to-finish --start-before-stopping --batch-size 2
+  - upgrade --rancher-url $RANCHER_URL_PROD --rancher-key $RANCHER_KEY_PROD --rancher-secret $RANCHER_SECRET_PROD --stack $RANCHER_STACK_PROD --service $RANCHER_SERVICE_PROD --environment $RANCHER_ENV_PROD --new-image $IMAGE --wait-for-upgrade-to-finish --start-before-stopping --batch-size 2
   only:
   - master
