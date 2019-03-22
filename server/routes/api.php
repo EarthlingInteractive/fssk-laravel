@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 Route::get('/auth', 'AuthController@index');
 Route::post('/auth', 'AuthController@login');
-Route::post('/auth/register', 'AuthController@register');
+Route::post('/users/register', 'AuthController@register');
 Route::delete('/auth', 'AuthController@logout');
 
 //must be logged in to get to these routes
