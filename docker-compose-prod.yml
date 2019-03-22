@@ -7,7 +7,7 @@ services:
     hostname: 'fssk-server'
     container_name: 'fssk-laravel-server'
     env_file: ./server/.env
-    command: ['./util/wait-for-it.sh', './util/server-entrypoint.sh', 'apache2-foreground']
+    command: ['./util/server-entrypoint.sh', 'apache2-foreground']
     environment:
       - 'NODE_ENV=production'
     ports:
