@@ -21,11 +21,8 @@ services:
       - app
   fssk-laravel-db:
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_DATABASE=test
+      - POSTGRES_DB=test
       - POSTGRES_PASSWORD=admin
-      - POSTGRES_HOST=localhost
-      - POSTGRES_PORT=5432
     image: 'postgres:9.6'
     container_name: 'fssk-laravel-db'
     ports:
