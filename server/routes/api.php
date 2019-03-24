@@ -17,6 +17,9 @@ Route::get('/auth', 'AuthController@index');
 Route::post('/auth', 'AuthController@login');
 Route::post('/users/register', 'AuthController@register');
 Route::delete('/auth', 'AuthController@logout');
+Route::post('/forgot-password', 'AuthController@forgotPassword');
+Route::get('/reset-password/validate-token/{token}', 'AuthController@validateToken');
+
 
 //must be logged in to get to these routes
 Route::middleware('auth:api')->group(function () {
