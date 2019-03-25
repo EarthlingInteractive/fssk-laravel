@@ -18,7 +18,8 @@ Route::post('/auth', 'AuthController@login');
 Route::post('/users/register', 'AuthController@register');
 Route::delete('/auth', 'AuthController@logout');
 Route::post('/forgot-password', 'AuthController@forgotPassword');
-Route::get('/reset-password/validate-token/{token}', 'AuthController@validateToken');
+Route::post('/reset-password', 'ResetPasswordController@reset');
+Route::get('/reset-password/validate-token/{token}', 'ResetPasswordController@validateToken');
 
 
 //must be logged in to get to these routes

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Validator;
 
 class AuthController extends Controller
@@ -119,23 +119,10 @@ class AuthController extends Controller
 	 */
 	protected function sendResetLinkFailedResponse(Request $request, $response)
 	{
-		return response()->json(['error' => $response], 400);
-	}
-
-	/**
-	 * Takes token, validates it
-	 * @param  string $token
-	 * @return
-	 */
-	public function validateToken($token)
-	{
-		//get user from token
-		$user = User::whereNotNull('password_resets.token')
-			->join('password_resets', 'users.email', '=', 'password_resets.email')->first();
-
-		if ($this->broker()->tokenExists($user, $token)) {
-			return response()->json(['isValid' => true, 'token' => $token, 'user' => $user], 200);
+		$message = $response;
+		if ($response == Password::INVALID_USER) {
+			$message = 'User does not exist';
 		}
-		return response()->json(['code' => 500, 'message' => 'Invalid Token ID', 'error' => []], 500);
+		return response()->json(['code' => 500, 'message' => $message, 'error' => []], 500);
 	}
 }
