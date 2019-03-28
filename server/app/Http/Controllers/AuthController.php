@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Validator;
 
 class AuthController extends Controller
 {
+	use SendsPasswordResetEmails;
 
 	/**
 	 * Return logged in user
@@ -84,5 +87,42 @@ class AuthController extends Controller
 	{
 		Auth::guard('api')->logout();
 		return response(null, 204);
+	}
+
+	/**
+	 * Takes email address, creates a token and sends email
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return
+	 */
+	public function forgotPassword(Request $request)
+	{
+		return $this->sendResetLinkEmail($request);
+	}
+
+	/**
+	 * Get the response for a successful password reset link.
+	 *
+	 * @param  string  $response
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+	 */
+	protected function sendResetLinkResponse($response)
+	{
+		return response()->json(['isValid' => true], 200);
+	}
+
+	/**
+	 * Get the response for a failed password reset link.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @param  string  $response
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+	 */
+	protected function sendResetLinkFailedResponse(Request $request, $response)
+	{
+		$message = $response;
+		if ($response == Password::INVALID_USER) {
+			$message = 'User does not exist';
+		}
+		return response()->json(['code' => 500, 'message' => $message, 'error' => []], 500);
 	}
 }

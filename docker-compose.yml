@@ -4,13 +4,13 @@ services:
     build:
       context: ./
       dockerfile: deploy/local.docker
-    hostname: 'fssk-server'
+    hostname: 'fssk-laravel-server'
     container_name: 'fssk-laravel-server'
     entrypoint: /server-entrypoint.sh
     env_file: ./server/.env
     command: 'apache2-foreground'
     ports:
-      - '4000:4000'
+      - '4000:80'
     volumes:
       - './:/var/www'
       - './deploy/server-entrypoint.sh:/server-entrypoint.sh'
