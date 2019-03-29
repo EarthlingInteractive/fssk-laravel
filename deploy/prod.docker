@@ -31,7 +31,7 @@ COPY ./deploy/php.ini /usr/local/etc/php/
 RUN apt-get update \
     && mkdir -p /usr/share/man/man1 \
     && mkdir -p /usr/share/man/man7 \
-    && apt-get install -y wget git zip postgresql postgresql-contrib libpq-dev && a2enmod rewrite proxy
+    && apt-get install -y wget gnupg git zip postgresql postgresql-contrib libpq-dev && a2enmod rewrite proxy
 
 RUN docker-php-ext-install -j$(nproc) pdo pdo_pgsql
 
@@ -42,6 +42,14 @@ COPY ./deploy/server-entrypoint.sh /var/www/util/server-entrypoint.sh
 RUN chmod 755 /var/www/util/server-entrypoint.sh
 
 COPY ./server /var/www/server
+
+RUN echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/sources.list.d/newrelic.list \
+    && wget -O- https://download.newrelic.com/548C16BF.gpg | apt-key add - \
+    && apt-get update \
+    && apt-get install -y newrelic-php5
+
+ENV NR_INSTALL_SILENT 1
+RUN newrelic-install install
 
 RUN wget -q 'https://getcomposer.org/installer' -O - | php; \
     mv composer.phar /usr/local/bin/composer;
@@ -55,4 +63,4 @@ CMD ["apache2-foreground"]
 
 ##################################################
 # Stage 3: Transfer client to a place we can serve from
-COPY --from=client-builder /opt/src/build /var/www/client/build
+COPY --from=client-builder /opt/src/build /var/www/server/public/client
