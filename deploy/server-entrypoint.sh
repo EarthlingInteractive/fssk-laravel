@@ -6,14 +6,17 @@ until pg_isready -h ${DB_HOST} -p ${DB_PORT} -d ${DB_DATABASE}; do
 done
 echo "Postgres is ready"
 
+echo "update new relic config"
+sed -i \
+        -e "s/newrelic.license =.*/newrelic.license = ${NR_INSTALL_KEY}/" \
+        -e "s/newrelic.appname =.*/newrelic.appname = ${APP_NAME}/" \
+        /usr/local/etc/php/conf.d/newrelic.ini
+
 echo "Composer install";
 composer install -d /var/www/server
 
 echo "Setting directory permissions";
 chown -R www-data.www-data /var/www && chmod 775 /var/www;
-
-echo "Create symlink for production builds";
-ln -s /var/www/client/build /var/www/server/public/client
 
 echo "Run migrations";
 php server/artisan migrate --force
