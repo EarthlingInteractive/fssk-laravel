@@ -118,13 +118,13 @@ Since this starter kit doesn't use the `test` and `stage` environments, only the
 
 #### Testing Production Builds Locally
 
-To test a production build locally, run:
+To test a production build locally, set `APP_ENV=production` in your `server/.env` file then run:
 
 ```shell
 docker-compose -f docker-compose-prod.yml up -d
 ```
 
-This command will build the client & server code and spin up the server in a docker instance with http://localhost:4000/ pointing to client's index.html.
+This command will build the client & server code and spin up the server in a docker instance with http://localhost/ pointing to client's index.html.
 The static client-side files are being served using php.  This configuration is intended to be deployed on a rancher-based
 environment.
 
